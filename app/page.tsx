@@ -205,8 +205,17 @@ function buildNPerString(
 
 /** Pentatonic 5-box (minor-based). Box 1 starts at root on low E. */
 function buildPent5(keyPc: number, box: Position5, anchorLowEFret = 5) {
+  // Check for problematic key/box combinations that generate wide spans
+  const isProblematicCase = 
+    (keyPc === 1 && box === 1) ||  // C#/Db Box 2
+    (keyPc === 6 && box === 4) ||  // F#/Gb Box 5
+    (keyPc === 11 && box === 2);   // B Box 3
+  
+  // Use higher anchor for problematic cases to avoid open strings
+  const adjustedAnchor = isProblematicCase ? anchorLowEFret + 5 : anchorLowEFret;
+  
   const startDeg = (0 + box) % MINOR_PENT_STEPS.length;
-  return buildNPerString(keyPc, MINOR_PENT_STEPS, startDeg, 2, anchorLowEFret);
+  return buildNPerString(keyPc, MINOR_PENT_STEPS, startDeg, 2, adjustedAnchor);
 }
 
 /** Hexatonic (minor pent + 2) 5-box. Box 1 starts at root on low E.
@@ -214,12 +223,27 @@ function buildPent5(keyPc: number, box: Position5, anchorLowEFret = 5) {
  *  it naturally falls within the box's fret range (not forced onto every string).
  */
 function buildHex5(keyPc: number, box: Position5, anchorLowEFret = 5) {
+  // Check for problematic key/box combinations that generate wide spans
+  const isProblematicCase = 
+    (keyPc === 1 && box === 1) ||  // C#/Db Box 2
+    (keyPc === 6 && box === 4) ||  // F#/Gb Box 5
+    (keyPc === 11 && box === 2);   // B Box 3
+  
+  // Use higher anchor for problematic cases to avoid open strings
+  const adjustedAnchor = isProblematicCase ? anchorLowEFret + 5 : anchorLowEFret;
+  
   // Base pent box
-  const pent = buildPent5(keyPc, box, anchorLowEFret);
+  const pent = buildPent5(keyPc, box, adjustedAnchor);
 
   // Overall box fret range
   const boxMin = Math.min(...pent.map((p) => p.fret));
   let boxMax = Math.max(...pent.map((p) => p.fret));
+  
+  // Constrain the box range to prevent excessive spans
+  const maxSpan = 8; // Maximum allowed fret span
+  if (boxMax - boxMin > maxSpan) {
+    boxMax = boxMin + maxSpan;
+  }
 
   // Only extend range for Box 1 to include the 9th fret B on D string
   if (box === 0) {
