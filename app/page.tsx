@@ -2,10 +2,13 @@
 
 import React, { useMemo, useState, useEffect } from "react";
 
-/** Tailwind-only • Player view (low-E at bottom) • Correct 3NPS • 7 positions */
+/** Tailwind-only • Player view (low-E at bottom) • Correct 3NPS • 7 positions
+ *  Plus Pent/Hex 5-box modes (minor-based), Box 1 anchored with root on low E
+ */
 
 type ScaleKind = "major" | "minor";
-type Position = 0 | 1 | 2 | 3 | 4 | 5 | 6; // Ionian..Locrian
+type Position = 0 | 1 | 2 | 3 | 4 | 5 | 6; // Ionian..Locrian (3NPS)
+type Position5 = 0 | 1 | 2 | 3 | 4; // 5-box sets
 
 const NOTE_NAMES_SHARP = [
   "C",
@@ -47,6 +50,10 @@ const SCALE_STEPS: Record<ScaleKind, number[]> = {
   major: [0, 2, 4, 5, 7, 9, 11], // Ionian
   minor: [0, 2, 3, 5, 7, 8, 10], // Aeolian (natural minor)
 };
+
+// Minor-derived sets for 5-box modes
+const MINOR_PENT_STEPS = [0, 3, 5, 7, 10]; // 1 b3 4 5 b7
+const MINOR_HEX_STEPS = [0, 2, 3, 5, 7, 10]; // 1 2 b3 4 5 b7
 
 // Intervals between adjacent strings in semitones (E→A=5, A→D=5, D→G=5, G→B=4, B→e=5)
 const STRING_INTERVALS = [5, 5, 5, 4, 5];
@@ -166,6 +173,109 @@ function build3NPS(
   return out;
 }
 
+/** Generic builder: N-notes-per-string shape walking scale degrees in order */
+function buildNPerString(
+  keyPc: number,
+  steps: number[],
+  startDeg: number,
+  notesPerString: number,
+  anchorLowEFret = 5
+): { string: number; fret: number; pc: number; degreeIdx: number }[] {
+  const totalNotes = 6 * notesPerString;
+  const firstPc = (keyPc + steps[startDeg]) % 12;
+  const firstFret = nearestFretForPcOnString(firstPc, 0, anchorLowEFret);
+  const out: { string: number; fret: number; pc: number; degreeIdx: number }[] = [];
+  let expectedFret = firstFret;
+  for (let j = 0; j < totalNotes; j++) {
+    const s = Math.floor(j / notesPerString);
+    const d = (startDeg + j) % steps.length;
+    const pc = (keyPc + steps[d]) % 12;
+    if (j > 0 && j % notesPerString === 0) {
+      expectedFret -= STRING_INTERVALS[s - 1];
+    } else if (j > 0) {
+      expectedFret += 2;
+    }
+    const fret = nearestFretForPcOnString(pc, s, expectedFret);
+    expectedFret = fret;
+    out.push({ string: s, fret, pc, degreeIdx: d });
+  }
+  return out;
+}
+
+/** Pentatonic 5-box (minor-based). Box 1 starts at root on low E. */
+function buildPent5(
+  keyPc: number,
+  box: Position5,
+  anchorLowEFret = 5
+) {
+  const startDeg = (0 + box) % MINOR_PENT_STEPS.length;
+  return buildNPerString(keyPc, MINOR_PENT_STEPS, startDeg, 2, anchorLowEFret);
+}
+
+/** Hexatonic (minor pent + 2) 5-box. Box 1 starts at root on low E.
+ *  Implementation: take the pentatonic box and add the 2nd degree only where
+ *  it naturally falls within the box's fret range (not forced onto every string).
+ */
+function buildHex5(
+  keyPc: number,
+  box: Position5,
+  anchorLowEFret = 5
+) {
+  // Base pent box
+  const pent = buildPent5(keyPc, box, anchorLowEFret);
+
+  // Overall box fret range
+  const boxMin = Math.min(...pent.map((p) => p.fret));
+  let boxMax = Math.max(...pent.map((p) => p.fret));
+  
+  // Only extend range for Box 1 to include the 9th fret B on D string
+  if (box === 0) {
+    boxMax += 1; // minimal extension just for Box 1
+  }
+
+  const targetPc = (keyPc + 2) % 12; // the 2nd degree
+  const added: { string: number; fret: number; pc: number }[] = [];
+
+  // For each string, check if the 2nd degree falls within the box range
+  for (let s = 0; s < 6; s++) {
+    const openPc = OPEN_STRINGS_PC[s];
+    const base = (targetPc - openPc + 120) % 12; // first occurrence >=0
+    
+    // Find all possible fret positions for the 2nd degree on this string
+    for (let k = 0; k <= 3; k++) {
+      const fret = base + 12 * k;
+      if (fret > 24) break;
+      
+      // Only add if it falls within the pentatonic box range
+      if (fret >= boxMin && fret <= boxMax) {
+        // Check if this note isn't already in the pentatonic set
+        const alreadyExists = pent.some(p => p.string === s && p.fret === fret);
+        if (!alreadyExists) {
+          added.push({ string: s, fret, pc: targetPc });
+          break; // Only add one occurrence per string
+        }
+      }
+    }
+  }
+
+  // Merge and remap degreeIdx to hex indices for all points
+  const merged = [
+    ...pent.map((p) => {
+      const interval = (p.pc - keyPc + 12) % 12;
+      const idx = MINOR_HEX_STEPS.indexOf(interval);
+      return { ...p, degreeIdx: idx };
+    }),
+    ...added.map((q) => ({
+      string: q.string,
+      fret: q.fret,
+      pc: q.pc,
+      degreeIdx: MINOR_HEX_STEPS.indexOf(2),
+    })),
+  ];
+
+  return merged;
+}
+
 /** Build full-neck set (all positions) */
 function buildFullNeck(
   keyPc: number,
@@ -191,7 +301,7 @@ function buildFullNeck(
 export default function Page() {
   const [keyName, setKeyName] = useState("A");
   const [scale, setScale] = useState<ScaleKind>("major");
-  const [mode, setMode] = useState<"3nps" | "full">("3nps");
+  const [mode, setMode] = useState<"3nps" | "full" | "pent5" | "hex5">("3nps");
   const [useFlats, setUseFlats] = useState(false);
   const [labelMode, setLabelMode] = useState<"note" | "degree">("degree");
   const [position, setPosition] = useState<Position>(0); // Ionian
@@ -200,6 +310,8 @@ export default function Page() {
 
   const points = useMemo(() => {
     if (mode === "3nps") return build3NPS(keyPc, scale, position, 5);
+    if (mode === "pent5") return buildPent5(keyPc, (position % 5) as Position5, 5);
+    if (mode === "hex5") return buildHex5(keyPc, (position % 5) as Position5, 5);
     return buildFullNeck(keyPc, scale, 21);
   }, [keyPc, scale, mode, position]);
 
@@ -265,8 +377,8 @@ export default function Page() {
           </Field>
 
           <Field label="View">
-            <div className="mt-1 flex gap-2">
-              {(["3nps", "full"] as const).map((m) => (
+            <div className="mt-1 grid grid-cols-2 gap-2 md:grid-cols-4">
+              {(["3nps", "full", "pent5", "hex5"] as const).map((m) => (
                 <button
                   key={m}
                   onClick={() => setMode(m)}
@@ -277,7 +389,13 @@ export default function Page() {
                       : "bg-neutral-800 border-neutral-700 hover:bg-neutral-700/60",
                   ].join(" ")}
                 >
-                  {m === "3nps" ? "3 Notes / String" : "Full Neck"}
+                  {m === "3nps"
+                    ? "3 Notes / String"
+                    : m === "full"
+                    ? "Full Neck"
+                    : m === "pent5"
+                    ? "Pentatonic (5 boxes)"
+                    : "Hexatonic (5 boxes)"}
                 </button>
               ))}
             </div>
@@ -299,7 +417,10 @@ export default function Page() {
                       : "bg-neutral-800 border-neutral-700 hover:bg-neutral-700/60",
                   ].join(" ")}
                 >
-                  {name}
+                  <div className="flex justify-between">
+                    <span>{name}</span>
+                    <span>{idx + 1}</span>
+                  </div>
                 </button>
               ))}
             </div>
@@ -307,6 +428,32 @@ export default function Page() {
               Tip: A Major + Ionian shows low-E{" "}
               <span className="text-neutral-200">5-7-9</span>. Switch positions
               to walk all seven shapes.
+            </p>
+          </Field>
+        )}
+        {(mode === "pent5" || mode === "hex5") && (
+          <Field label={mode === "pent5" ? "Position (Pentatonic boxes)" : "Position (Hexatonic boxes)"} className="mt-3">
+            <div className="mt-1 grid grid-cols-2 gap-2 sm:grid-cols-5">
+              {Array.from({ length: 5 }).map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setPosition(idx as Position)}
+                  className={[
+                    "rounded-md px-3 py-2 text-sm border",
+                    position % 5 === idx
+                      ? "bg-emerald-600/20 border-emerald-500 text-emerald-300"
+                      : "bg-neutral-800 border-neutral-700 hover:bg-neutral-700/60",
+                  ].join(" ")}
+                >
+                  <div className="flex justify-between">
+                    <span>Box {idx + 1}</span>
+                    <span>{idx + 1}</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+            <p className="mt-2 text-xs text-neutral-400">
+              Minor-based boxes. Box 1 anchors the root on low E near the 5th fret.
             </p>
           </Field>
         )}
@@ -370,6 +517,7 @@ export default function Page() {
             scale={scale}
             labelMode={labelMode}
             useFlats={useFlats}
+            mode={mode}
           />
         </div>
       </div>
@@ -408,6 +556,7 @@ function Fretboard({
   scale,
   labelMode,
   useFlats,
+  mode,
 }: {
   points: { string: number; fret: number; pc: number; degreeIdx: number }[];
   minFret: number;
@@ -416,6 +565,7 @@ function Fretboard({
   scale: ScaleKind;
   labelMode: "note" | "degree";
   useFlats: boolean;
+  mode: "3nps" | "full" | "pent5" | "hex5";
 }) {
   // Responsive bubble radius (matches Tailwind sizes below)
   // base (mobile): w-14 -> 56px diameter -> r=28
@@ -509,7 +659,7 @@ function Fretboard({
                 x={x}
                 y={padV}
                 width={fretW}
-                height={(height - padBottom) - padV}
+                height={height - padV * 2}
                 className={
                   isOpenSpace ? "fill-neutral-400" : "fill-transparent"
                 }
@@ -525,7 +675,7 @@ function Fretboard({
             x1={0}
             y1={padV}
             x2={0}
-            y2={visY(stringCount - 1)}
+            y2={height - padV}
             stroke={strokeNut}
             strokeWidth={minFret === 0 ? 4 : 2}
           />
@@ -537,7 +687,7 @@ function Fretboard({
                 x1={x}
                 y1={padV}
                 x2={x}
-                y2={height - padBottom + 8}
+                y2={height - padV}
                 stroke={strokeFret}
               />
             );
@@ -587,14 +737,20 @@ function Fretboard({
           const x = padL + (p.fret - displayMinFret + 0.5) * fretW;
           const y = visY(p.string);
           const isRoot = p.pc === keyPc;
+          const currentSteps =
+            mode === "pent5"
+              ? MINOR_PENT_STEPS
+              : mode === "hex5"
+              ? MINOR_HEX_STEPS
+              : SCALE_STEPS[scale];
           const label =
             labelMode === "degree"
-              ? isRoot
-                ? "1"
-                : String(
-                    (p.degreeIdx + 1 - SCALE_STEPS[scale].indexOf(0) + 7) % 7 ||
-                      7
-                  )
+              ? (() => {
+                  const len = currentSteps.length;
+                  const zeroIdx = currentSteps.indexOf(0);
+                  const degNum = ((p.degreeIdx - zeroIdx + len) % len) + 1;
+                  return String(degNum);
+                })()
               : pcToName(p.pc);
           return (
             <div
