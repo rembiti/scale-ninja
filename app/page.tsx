@@ -184,7 +184,8 @@ function buildNPerString(
   const totalNotes = 6 * notesPerString;
   const firstPc = (keyPc + steps[startDeg]) % 12;
   const firstFret = nearestFretForPcOnString(firstPc, 0, anchorLowEFret);
-  const out: { string: number; fret: number; pc: number; degreeIdx: number }[] = [];
+  const out: { string: number; fret: number; pc: number; degreeIdx: number }[] =
+    [];
   let expectedFret = firstFret;
   for (let j = 0; j < totalNotes; j++) {
     const s = Math.floor(j / notesPerString);
@@ -203,11 +204,7 @@ function buildNPerString(
 }
 
 /** Pentatonic 5-box (minor-based). Box 1 starts at root on low E. */
-function buildPent5(
-  keyPc: number,
-  box: Position5,
-  anchorLowEFret = 5
-) {
+function buildPent5(keyPc: number, box: Position5, anchorLowEFret = 5) {
   const startDeg = (0 + box) % MINOR_PENT_STEPS.length;
   return buildNPerString(keyPc, MINOR_PENT_STEPS, startDeg, 2, anchorLowEFret);
 }
@@ -216,18 +213,14 @@ function buildPent5(
  *  Implementation: take the pentatonic box and add the 2nd degree only where
  *  it naturally falls within the box's fret range (not forced onto every string).
  */
-function buildHex5(
-  keyPc: number,
-  box: Position5,
-  anchorLowEFret = 5
-) {
+function buildHex5(keyPc: number, box: Position5, anchorLowEFret = 5) {
   // Base pent box
   const pent = buildPent5(keyPc, box, anchorLowEFret);
 
   // Overall box fret range
   const boxMin = Math.min(...pent.map((p) => p.fret));
   let boxMax = Math.max(...pent.map((p) => p.fret));
-  
+
   // Only extend range for Box 1 to include the 9th fret B on D string
   if (box === 0) {
     boxMax += 1; // minimal extension just for Box 1
@@ -240,16 +233,18 @@ function buildHex5(
   for (let s = 0; s < 6; s++) {
     const openPc = OPEN_STRINGS_PC[s];
     const base = (targetPc - openPc + 120) % 12; // first occurrence >=0
-    
+
     // Find all possible fret positions for the 2nd degree on this string
     for (let k = 0; k <= 3; k++) {
       const fret = base + 12 * k;
       if (fret > 24) break;
-      
+
       // Only add if it falls within the pentatonic box range
       if (fret >= boxMin && fret <= boxMax) {
         // Check if this note isn't already in the pentatonic set
-        const alreadyExists = pent.some(p => p.string === s && p.fret === fret);
+        const alreadyExists = pent.some(
+          (p) => p.string === s && p.fret === fret
+        );
         if (!alreadyExists) {
           added.push({ string: s, fret, pc: targetPc });
           break; // Only add one occurrence per string
@@ -310,8 +305,10 @@ export default function Page() {
 
   const points = useMemo(() => {
     if (mode === "3nps") return build3NPS(keyPc, scale, position, 5);
-    if (mode === "pent5") return buildPent5(keyPc, (position % 5) as Position5, 5);
-    if (mode === "hex5") return buildHex5(keyPc, (position % 5) as Position5, 5);
+    if (mode === "pent5")
+      return buildPent5(keyPc, (position % 5) as Position5, 5);
+    if (mode === "hex5")
+      return buildHex5(keyPc, (position % 5) as Position5, 5);
     return buildFullNeck(keyPc, scale, 21);
   }, [keyPc, scale, mode, position]);
 
@@ -337,9 +334,9 @@ export default function Page() {
   return (
     <div className="min-h-dvh bg-neutral-950 text-neutral-100">
       <div className="mx-auto max-w-6xl px-4 py-6">
-        <h1 className="text-xl font-semibold tracking-tight">
-          Guitar Fretboard Scale Explorer — 3NPS
-        </h1>
+        <a href={"/"} className="text-7xl font-thin tracking-tight">
+          scale-ninja
+        </a>
 
         {/* Controls */}
         <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
@@ -377,7 +374,7 @@ export default function Page() {
           </Field>
 
           <Field label="View">
-            <div className="mt-1 grid grid-cols-2 gap-2 md:grid-cols-4">
+            <div className="mt-1 grid grid-cols-2 gap-2 md:grid-cols-2">
               {(["3nps", "full", "pent5", "hex5"] as const).map((m) => (
                 <button
                   key={m}
@@ -419,7 +416,6 @@ export default function Page() {
                 >
                   <div className="flex justify-between">
                     <span>{name}</span>
-                    <span>{idx + 1}</span>
                   </div>
                 </button>
               ))}
@@ -432,7 +428,14 @@ export default function Page() {
           </Field>
         )}
         {(mode === "pent5" || mode === "hex5") && (
-          <Field label={mode === "pent5" ? "Position (Pentatonic boxes)" : "Position (Hexatonic boxes)"} className="mt-3">
+          <Field
+            label={
+              mode === "pent5"
+                ? "Position (Pentatonic boxes)"
+                : "Position (Hexatonic boxes)"
+            }
+            className="mt-3"
+          >
             <div className="mt-1 grid grid-cols-2 gap-2 sm:grid-cols-5">
               {Array.from({ length: 5 }).map((_, idx) => (
                 <button
@@ -447,13 +450,13 @@ export default function Page() {
                 >
                   <div className="flex justify-between">
                     <span>Box {idx + 1}</span>
-                    <span>{idx + 1}</span>
                   </div>
                 </button>
               ))}
             </div>
             <p className="mt-2 text-xs text-neutral-400">
-              Minor-based boxes. Box 1 anchors the root on low E near the 5th fret.
+              Minor-based boxes. Box 1 anchors the root on low E near the 5th
+              fret.
             </p>
           </Field>
         )}
@@ -659,7 +662,7 @@ function Fretboard({
                 x={x}
                 y={padV}
                 width={fretW}
-                height={height - padV * 2}
+                height={height - padV - padBottom}
                 className={
                   isOpenSpace ? "fill-neutral-400" : "fill-transparent"
                 }
@@ -675,7 +678,7 @@ function Fretboard({
             x1={0}
             y1={padV}
             x2={0}
-            y2={height - padV}
+            y2={height - padBottom}
             stroke={strokeNut}
             strokeWidth={minFret === 0 ? 4 : 2}
           />
@@ -687,7 +690,7 @@ function Fretboard({
                 x1={x}
                 y1={padV}
                 x2={x}
-                y2={height - padV}
+                y2={height - padBottom}
                 stroke={strokeFret}
               />
             );
@@ -700,7 +703,7 @@ function Fretboard({
               <text
                 key={i}
                 x={x}
-                y={height - 10}
+                y={height - 20}
                 className="fill-neutral-300 text-xl md:text-2xl font-bold"
                 textAnchor="middle"
               >
