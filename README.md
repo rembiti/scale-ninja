@@ -17,13 +17,17 @@ An interactive web application for visualizing and learning guitar scales across
   - Hexatonic Boxes - 5 pentatonic boxes with added 2nd degree
 - **Interactive Controls**:
   - Select any of 12 keys (with enharmonic equivalents)
-  - Toggle between sharp/flat notation
+  - Smart notation toggle - automatically converts selected key to enharmonic equivalent
   - Switch between note names and scale degrees
-  - Responsive design works on mobile, tablet, and desktop
+  - Real-time key and relative key display
+  - Responsive design optimized for mobile, tablet, and desktop
 - **Visual Features**:
-  - Color-coded note markers
+  - Color-coded note markers with dynamic sizing
   - Clear fret and string numbering
-  - Optimized for all screen sizes
+  - Mobile-optimized bubble sizes to prevent overlap
+  - Professional key information display showing current and relative keys
+  - Contextual mode information (position, box, scale type)
+  - Optimized for all screen sizes with proper responsive behavior
 
 ## Getting Started
 
@@ -72,12 +76,28 @@ An interactive web application for visualizing and learning guitar scales across
    - Toggle between note names and scale degrees
    - Switch between sharp (#) and flat (♭) notation
 
+## Architecture
+
+The application is built with a modular component architecture for maintainability and reusability:
+
+- **Components**:
+  - `Header` - Application title and branding
+  - `ControlPanel` - Interactive controls for key, scale, mode, and notation selection
+  - `KeyDisplay` - Real-time display of current key, relative key, and mode context
+  - `Fretboard` - Dynamic SVG fretboard with responsive note bubble rendering
+  - `Field` - Reusable form field wrapper component
+
+- **Core Logic**:
+  - `ScaleEngine` - Scale generation algorithms for all modes (3NPS, pentatonic, hexatonic, full neck)
+  - `types` - TypeScript definitions and musical constants
+
 ## Technology Stack
 
-- [Next.js](https://nextjs.org/) - React framework
+- [Next.js 15](https://nextjs.org/) - React framework with App Router
 - [TypeScript](https://www.typescriptlang.org/) - Type-safe JavaScript
-- [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework
-- [React](https://reactjs.org/) - UI library
+- [Tailwind CSS v4](https://tailwindcss.com/) - Utility-first CSS framework
+- [React 19](https://reactjs.org/) - UI library
+- SVG - Scalable vector graphics for fretboard rendering
 - [Vercel](https://vercel.com/) - Deployment platform
 
 ## Contributing
