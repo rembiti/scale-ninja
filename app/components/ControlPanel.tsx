@@ -5,7 +5,6 @@ import {
   Position5,
   PositionCAGED,
   POSITION_LABELS,
-  CAGED_LABELS,
   NOTE_NAMES_SHARP,
   NOTE_NAMES_FLAT,
 } from "./types";
@@ -191,12 +190,18 @@ export function ControlPanel({
         {/* CAGED Shape Selection */}
         {selectedMode === "caged" && (
           <Field label="Shape">
-            {CAGED_LABELS.map((label, idx) => (
+            {[
+              { label: "E Shape", index: 0 },
+              { label: "D Shape", index: 1 },
+              { label: "C Shape", index: 2 },
+              { label: "A Shape", index: 3 },
+              { label: "G Shape", index: 4 },
+            ].map(({ label, index }) => (
               <button
-                key={idx}
-                onClick={() => setSelectedCAGEDShape(idx as PositionCAGED)}
+                key={index}
+                onClick={() => setSelectedCAGEDShape(index as PositionCAGED)}
                 className={`px-3 py-2 rounded text-xs font-medium transition-colors ${
-                  selectedCAGEDShape === idx
+                  selectedCAGEDShape === index
                     ? "bg-emerald-500 text-white"
                     : "bg-neutral-700 text-neutral-200 hover:bg-neutral-600"
                 }`}

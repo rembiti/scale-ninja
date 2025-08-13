@@ -86,11 +86,11 @@ export const POSITION_LABELS = [
 ];
 
 export const CAGED_LABELS = [
+  "E Shape",
+  "D Shape", 
   "C Shape",
   "A Shape",
   "G Shape",
-  "E Shape",
-  "D Shape",
 ];
 
 // Scale point type

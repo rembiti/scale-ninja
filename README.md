@@ -23,7 +23,7 @@ An interactive web application for visualizing and learning guitar scales across
   - Real-time key and relative key display
   - Responsive design optimized for mobile, tablet, and desktop
 - **CAGED System Features**:
-  - 5 classic chord shapes: C, A, G, E, D positions
+  - 5 classic chord shapes: E, D, C, A, G positions
   - Triad chord tones (root, 3rd, 5th) highlighted within each pentatonic box
   - Visual distinction between chord tones and scale tones
   - Perfect for learning chord-scale relationships
