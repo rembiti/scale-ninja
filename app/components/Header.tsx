@@ -11,13 +11,13 @@ export function Header() {
       >
         <Icon
           icon="game-icons:guitar-head"
-          className="w-12 h-12 md:w-16 md:h-16 text-emerald-500 transition-all duration-300 group-hover:rotate-12 group-hover:scale-110"
+          className="w-12 h-12 md:w-16 md:h-16 text-emerald-500 transition-all duration-300 group-hover:rotate-12 group-hover:scale-105"
         />
         <span className="transition-all duration-300 group-hover:text-emerald-400">
           scale-ninja
         </span>
       </Link>
-      
+
       {/* GitHub Link */}
       <Link
         href="https://github.com/engageintellect/scale-ninja"
