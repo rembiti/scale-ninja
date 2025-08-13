@@ -11,16 +11,22 @@ An interactive web application for visualizing and learning guitar scales across
   - Minor Pentatonic (5 boxes)
   - Minor Hexatonic (Minor Pentatonic + 2nd degree)
 - **Multiple Viewing Modes**:
-  - 3 Notes Per String (3NPS) - 7 positions
-  - Full Neck View - All notes in the scale across the entire fretboard
-  - Pentatonic Boxes - 5 classic CAGED-style positions
+  - CAGED System - 5 chord shapes with triad chord tones highlighted over pentatonic patterns
+  - Pentatonic Boxes - 5 classic pentatonic positions
+  - 3 Notes Per String (3NPS) - 7 modal positions
   - Hexatonic Boxes - 5 pentatonic boxes with added 2nd degree
+  - Full Neck View - All notes in the scale across the entire fretboard
 - **Interactive Controls**:
   - Select any of 12 keys (with enharmonic equivalents)
   - Smart notation toggle - automatically converts selected key to enharmonic equivalent
   - Switch between note names and scale degrees
   - Real-time key and relative key display
   - Responsive design optimized for mobile, tablet, and desktop
+- **CAGED System Features**:
+  - 5 classic chord shapes: C, A, G, E, D positions
+  - Triad chord tones (root, 3rd, 5th) highlighted within each pentatonic box
+  - Visual distinction between chord tones and scale tones
+  - Perfect for learning chord-scale relationships
 - **Visual Features**:
   - Color-coded note markers with dynamic sizing
   - Clear fret and string numbering

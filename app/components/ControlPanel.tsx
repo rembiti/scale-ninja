@@ -52,34 +52,34 @@ export function ControlPanel({
   const convertKeyToNotation = (key: string, toFlats: boolean): string => {
     // Mapping between sharps and flats
     const sharpToFlat: { [key: string]: string } = {
-      'C#': 'Db',
-      'D#': 'Eb', 
-      'F#': 'Gb',
-      'G#': 'Ab',
-      'A#': 'Bb'
+      "C#": "Db",
+      "D#": "Eb",
+      "F#": "Gb",
+      "G#": "Ab",
+      "A#": "Bb",
     };
-    
+
     const flatToSharp: { [key: string]: string } = {
-      'Db': 'C#',
-      'Eb': 'D#',
-      'Gb': 'F#', 
-      'Ab': 'G#',
-      'Bb': 'A#'
+      Db: "C#",
+      Eb: "D#",
+      Gb: "F#",
+      Ab: "G#",
+      Bb: "A#",
     };
-    
+
     if (toFlats && sharpToFlat[key]) {
       return sharpToFlat[key];
     } else if (!toFlats && flatToSharp[key]) {
       return flatToSharp[key];
     }
-    
+
     return key; // Return unchanged if no conversion needed
   };
 
   const handleNotationToggle = () => {
     const newUseFlats = !useFlats;
     const convertedKey = convertKeyToNotation(selectedKey, newUseFlats);
-    
+
     setUseFlats(newUseFlats);
     setSelectedKey(convertedKey);
   };
@@ -126,15 +126,19 @@ export function ControlPanel({
         {/* Mode Selection */}
         <Field label="Mode">
           {[
-            { value: "3nps", label: "3NPS" },
-            { value: "full", label: "Full Neck" },
-            { value: "pent5", label: "Pentatonic" },
-            { value: "hex5", label: "Hexatonic" },
             { value: "caged", label: "CAGED" },
+            { value: "pent5", label: "Pentatonic" },
+            { value: "3nps", label: "3NPS" },
+            { value: "hex5", label: "Hexatonic" },
+            { value: "full", label: "Full Neck" },
           ].map(({ value, label }) => (
             <button
               key={value}
-              onClick={() => setSelectedMode(value as "3nps" | "full" | "pent5" | "hex5" | "caged")}
+              onClick={() =>
+                setSelectedMode(
+                  value as "3nps" | "full" | "pent5" | "hex5" | "caged"
+                )
+              }
               className={`px-4 py-2 rounded text-sm font-medium transition-colors ${
                 selectedMode === value
                   ? "bg-emerald-500 text-white"
