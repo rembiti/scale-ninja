@@ -84,7 +84,7 @@ export function ControlPanel({
   };
 
   return (
-    <div className="bg-neutral-800 p-6 rounded-lg mb-6">
+    <div className="bg-neutral-800 p-6 rounded-lg mb-6 animate-slide-up shadow-lg hover:shadow-xl transition-shadow duration-300">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Key Selection */}
         <Field label="Key">
@@ -93,10 +93,10 @@ export function ControlPanel({
               <button
                 key={key}
                 onClick={() => setSelectedKey(key)}
-                className={`px-3 py-2 rounded text-sm font-medium transition-colors w-full ${
+                className={`px-3 py-2 rounded text-sm font-medium transition-all duration-200 w-full transform hover:scale-105 active:scale-95 ${
                   selectedKey === key
-                    ? "bg-emerald-500 text-white"
-                    : "bg-neutral-700 text-neutral-200 hover:bg-neutral-600"
+                    ? "bg-emerald-500 text-white shadow-lg"
+                    : "bg-neutral-700 text-neutral-200 hover:bg-neutral-600 hover:shadow-md"
                 }`}
               >
                 {key}
@@ -111,10 +111,10 @@ export function ControlPanel({
             <button
               key={scale}
               onClick={() => setSelectedScale(scale)}
-              className={`px-4 py-2 rounded text-sm font-medium transition-colors capitalize ${
+              className={`px-4 py-2 rounded text-sm font-medium transition-all duration-200 capitalize transform hover:scale-105 active:scale-95 ${
                 selectedScale === scale
-                  ? "bg-emerald-500 text-white"
-                  : "bg-neutral-700 text-neutral-200 hover:bg-neutral-600"
+                  ? "bg-emerald-500 text-white shadow-lg"
+                  : "bg-neutral-700 text-neutral-200 hover:bg-neutral-600 hover:shadow-md"
               }`}
             >
               {scale}
@@ -138,10 +138,10 @@ export function ControlPanel({
                   value as "3nps" | "full" | "pent5" | "hex5" | "caged"
                 )
               }
-              className={`px-4 py-2 rounded text-sm font-medium transition-colors ${
+              className={`px-4 py-2 rounded text-sm font-medium transition-all duration-200 transform hover:scale-105 active:scale-95 ${
                 selectedMode === value
-                  ? "bg-emerald-500 text-white"
-                  : "bg-neutral-700 text-neutral-200 hover:bg-neutral-600"
+                  ? "bg-emerald-500 text-white shadow-lg"
+                  : "bg-neutral-700 text-neutral-200 hover:bg-neutral-600 hover:shadow-md"
               }`}
             >
               {label}
@@ -156,10 +156,10 @@ export function ControlPanel({
               <button
                 key={idx}
                 onClick={() => setSelectedPosition(idx as Position)}
-                className={`px-3 py-2 rounded text-xs font-medium transition-colors ${
+                className={`px-3 py-2 rounded text-xs font-medium transition-all duration-200 transform hover:scale-105 active:scale-95 ${
                   selectedPosition === idx
-                    ? "bg-emerald-500 text-white"
-                    : "bg-neutral-700 text-neutral-200 hover:bg-neutral-600"
+                    ? "bg-emerald-500 text-white shadow-lg"
+                    : "bg-neutral-700 text-neutral-200 hover:bg-neutral-600 hover:shadow-md"
                 }`}
               >
                 {idx + 1}. {label}
@@ -175,10 +175,10 @@ export function ControlPanel({
               <button
                 key={i}
                 onClick={() => setSelectedBox(i as Position5)}
-                className={`px-4 py-2 rounded text-sm font-medium transition-colors ${
+                className={`px-4 py-2 rounded text-sm font-medium transition-all duration-200 transform hover:scale-105 active:scale-95 ${
                   selectedBox === i
-                    ? "bg-emerald-500 text-white"
-                    : "bg-neutral-700 text-neutral-200 hover:bg-neutral-600"
+                    ? "bg-emerald-500 text-white shadow-lg"
+                    : "bg-neutral-700 text-neutral-200 hover:bg-neutral-600 hover:shadow-md"
                 }`}
               >
                 Box {i + 1}
@@ -200,10 +200,10 @@ export function ControlPanel({
               <button
                 key={index}
                 onClick={() => setSelectedCAGEDShape(index as PositionCAGED)}
-                className={`px-3 py-2 rounded text-xs font-medium transition-colors ${
+                className={`px-3 py-2 rounded text-xs font-medium transition-all duration-200 transform hover:scale-105 active:scale-95 ${
                   selectedCAGEDShape === index
-                    ? "bg-emerald-500 text-white"
-                    : "bg-neutral-700 text-neutral-200 hover:bg-neutral-600"
+                    ? "bg-emerald-500 text-white shadow-lg"
+                    : "bg-neutral-700 text-neutral-200 hover:bg-neutral-600 hover:shadow-md"
                 }`}
               >
                 {label}
@@ -221,10 +221,10 @@ export function ControlPanel({
             <button
               key={value}
               onClick={() => setLabelMode(value as "note" | "degree")}
-              className={`px-4 py-2 rounded text-sm font-medium transition-colors ${
+              className={`px-4 py-2 rounded text-sm font-medium transition-all duration-200 transform hover:scale-105 active:scale-95 ${
                 labelMode === value
-                  ? "bg-emerald-500 text-white"
-                  : "bg-neutral-700 text-neutral-200 hover:bg-neutral-600"
+                  ? "bg-emerald-500 text-white shadow-lg"
+                  : "bg-neutral-700 text-neutral-200 hover:bg-neutral-600 hover:shadow-md"
               }`}
             >
               {label}
@@ -236,10 +236,10 @@ export function ControlPanel({
         <Field label="Notation">
           <button
             onClick={handleNotationToggle}
-            className={`px-4 py-2 rounded text-sm font-medium transition-colors ${
+            className={`px-4 py-2 rounded text-sm font-medium transition-all duration-200 transform hover:scale-105 active:scale-95 ${
               useFlats
-                ? "bg-emerald-500 text-white"
-                : "bg-neutral-700 text-neutral-200 hover:bg-neutral-600"
+                ? "bg-emerald-500 text-white shadow-lg"
+                : "bg-neutral-700 text-neutral-200 hover:bg-neutral-600 hover:shadow-md"
             }`}
           >
             {useFlats ? "♭ Flats" : "♯ Sharps"}

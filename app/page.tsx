@@ -57,36 +57,40 @@ export default function Page() {
       <div className="container mx-auto px-4 py-8">
         <Header />
 
-        <ControlPanel
-          selectedKey={selectedKey}
-          setSelectedKey={setSelectedKey}
-          selectedScale={selectedScale}
-          setSelectedScale={setSelectedScale}
-          selectedMode={selectedMode}
-          setSelectedMode={setSelectedMode}
-          selectedPosition={selectedPosition}
-          setSelectedPosition={setSelectedPosition}
-          selectedBox={selectedBox}
-          setSelectedBox={setSelectedBox}
-          selectedCAGEDShape={selectedCAGEDShape}
-          setSelectedCAGEDShape={setSelectedCAGEDShape}
-          labelMode={labelMode}
-          setLabelMode={setLabelMode}
-          useFlats={useFlats}
-          setUseFlats={setUseFlats}
-        />
+        <div className="animate-slide-up" style={{ animationDelay: '0.1s', animationFillMode: 'both' }}>
+          <ControlPanel
+            selectedKey={selectedKey}
+            setSelectedKey={setSelectedKey}
+            selectedScale={selectedScale}
+            setSelectedScale={setSelectedScale}
+            selectedMode={selectedMode}
+            setSelectedMode={setSelectedMode}
+            selectedPosition={selectedPosition}
+            setSelectedPosition={setSelectedPosition}
+            selectedBox={selectedBox}
+            setSelectedBox={setSelectedBox}
+            selectedCAGEDShape={selectedCAGEDShape}
+            setSelectedCAGEDShape={setSelectedCAGEDShape}
+            labelMode={labelMode}
+            setLabelMode={setLabelMode}
+            useFlats={useFlats}
+            setUseFlats={setUseFlats}
+          />
+        </div>
 
-        <KeyDisplay
-          selectedKey={selectedKey}
-          selectedScale={selectedScale}
-          selectedMode={selectedMode}
-          selectedPosition={selectedPosition}
-          selectedBox={selectedBox}
-          selectedCAGEDShape={selectedCAGEDShape}
-          useFlats={useFlats}
-        />
+        <div className="animate-slide-up" style={{ animationDelay: '0.2s', animationFillMode: 'both' }}>
+          <KeyDisplay
+            selectedKey={selectedKey}
+            selectedScale={selectedScale}
+            selectedMode={selectedMode}
+            selectedPosition={selectedPosition}
+            selectedBox={selectedBox}
+            selectedCAGEDShape={selectedCAGEDShape}
+            useFlats={useFlats}
+          />
+        </div>
 
-        <div className="bg-neutral-800 p-2 md:p-6 rounded-lg">
+        <div className="bg-neutral-800 p-2 md:p-6 rounded-lg animate-slide-up shadow-lg hover:shadow-xl transition-shadow duration-300" style={{ animationDelay: '0.3s', animationFillMode: 'both' }}>
           <Fretboard
             points={points}
             minFret={minFret}
@@ -99,7 +103,9 @@ export default function Page() {
           />
         </div>
 
-        <Footer />
+        <div className="animate-fade-in" style={{ animationDelay: '0.4s', animationFillMode: 'both' }}>
+          <Footer />
+        </div>
       </div>
     </div>
   );
