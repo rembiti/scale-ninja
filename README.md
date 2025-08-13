@@ -1,6 +1,6 @@
-# scale ninja
+# 🎸 Scale Ninja
 
-An interactive web application for visualizing and learning guitar scales across the entire fretboard. Built with Next.js, React, and TypeScript.
+An interactive web application for visualizing and learning guitar scales across the entire fretboard. Master guitar scales with intuitive fretboard patterns, CAGED system visualization, and multiple learning modes. Built with Next.js, React, and TypeScript.
 
 ![Guitar Scale Explorer Screenshot](public/screenshot.png)
 
@@ -33,6 +33,8 @@ An interactive web application for visualizing and learning guitar scales across
   - Mobile-optimized bubble sizes to prevent overlap
   - Professional key information display showing current and relative keys
   - Contextual mode information (position, box, scale type)
+  - Beautiful guitar head icon branding with Iconify integration
+  - Custom favicon matching the app's visual identity
   - Optimized for all screen sizes with proper responsive behavior
 
 ## Getting Started
@@ -40,15 +42,15 @@ An interactive web application for visualizing and learning guitar scales across
 ### Prerequisites
 
 - Node.js 18.0 or later
-- npm or yarn
+- npm, yarn, or pnpm
 
 ### Installation
 
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/yourusername/guitar-scales.git
-   cd guitar-scales
+   git clone https://github.com/engageintellect/scale-ninja.git
+   cd scale-ninja
    ```
 
 2. Install dependencies:
@@ -57,6 +59,8 @@ An interactive web application for visualizing and learning guitar scales across
    npm install
    # or
    yarn install
+   # or
+   pnpm install
    ```
 
 3. Run the development server:
@@ -65,6 +69,8 @@ An interactive web application for visualizing and learning guitar scales across
    npm run dev
    # or
    yarn dev
+   # or
+   pnpm dev
    ```
 
 4. Open [http://localhost:3000](http://localhost:3000) in your browser.
@@ -99,10 +105,11 @@ The application is built with a modular component architecture for maintainabili
 
 ## Technology Stack
 
-- [Next.js 15](https://nextjs.org/) - React framework with App Router
+- [Next.js 15](https://nextjs.org/) - React framework with App Router and Turbopack
 - [TypeScript](https://www.typescriptlang.org/) - Type-safe JavaScript
 - [Tailwind CSS v4](https://tailwindcss.com/) - Utility-first CSS framework
 - [React 19](https://reactjs.org/) - UI library
+- [Iconify](https://iconify.design/) - Comprehensive icon library
 - SVG - Scalable vector graphics for fretboard rendering
 - [Vercel](https://vercel.com/) - Deployment platform
 
