@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { ScaleKind, ScalePoint, NOTE_NAMES_SHARP, NOTE_NAMES_FLAT, SCALE_STEPS, MINOR_PENT_STEPS, MINOR_HEX_STEPS } from './types';
+import { audioEngine } from './AudioEngine';
 
 interface FretboardProps {
   points: ScalePoint[];
@@ -57,12 +58,20 @@ export function Fretboard({
         fretW = Math.max(42, Math.min(52, remainingWidth / displayFretCount));
         bubbleR = 18; // Fixed size, slightly smaller than desktop
       } else {
-        // Mobile: use fixed small bubbles, maximize fret space
-        padL = 15;
-        padR = 5;
+        // Mobile: ALWAYS use full width, calculate fret width to fill space
+        const stringLabelSpace = 40; // Space for string names (E, A, D, etc.)
+        padL = stringLabelSpace;
+        padR = 8; // Minimal right padding
         const remainingWidth = availableWidth - padL - padR;
-        fretW = Math.max(28, Math.min(40, remainingWidth / displayFretCount));
-        bubbleR = 16; // Fixed size, smaller than desktop but readable
+        
+        // Always use full available width - calculate fret width to fit
+        fretW = remainingWidth / displayFretCount;
+        
+        // Ensure minimum fret width for usability, but prioritize full width
+        fretW = Math.max(24, fretW);
+        
+        // Adjust bubble size based on available fret width
+        bubbleR = Math.min(16, Math.max(12, fretW * 0.35));
       }
       
       setDimensions({ bubbleR, fretW, padL, padR });
@@ -104,6 +113,63 @@ export function Fretboard({
   const pcToName = (pc: number) =>
     useFlats ? NOTE_NAMES_FLAT[pc] : NOTE_NAMES_SHARP[pc];
   const visY = (s: number) => (stringCount - 1 - s) * stringH + padV; // player view (low-E bottom)
+
+  // String names for standard tuning (low to high)
+  const stringNames = ['E', 'A', 'D', 'G', 'B', 'E'];
+
+  // Handle note click for audio playback
+  const handleNoteClick = async (stringIndex: number, fret: number) => {
+    try {
+      await audioEngine.playStringFret(stringIndex, fret);
+    } catch (error) {
+      console.warn('Audio playback failed:', error);
+    }
+  };
+
+  // Fret markers (dots) - standard guitar positions
+  const getFretMarkers = () => {
+    const markers = [];
+    for (let fret = displayMinFret; fret <= displayMinFret + displayFretCount - 1; fret++) {
+      if (fret === 0) continue; // No marker on open strings
+      
+      const fretIndex = fret - displayMinFret;
+      const x = padL + (fretIndex + 0.5) * fretW;
+      const centerY = padV + (height - padV - padBottom) / 2;
+      
+      // Single dots on frets 3, 5, 7, 9, 15, 17, 19, 21
+      if ([3, 5, 7, 9, 15, 17, 19, 21].includes(fret)) {
+        markers.push(
+          <circle
+            key={`dot-${fret}`}
+            cx={x}
+            cy={centerY}
+            r={10}
+            className="fill-neutral-500"
+          />
+        );
+      }
+      // Double dots on frets 12, 24 (spaced even further apart)
+      else if ([12, 24].includes(fret)) {
+        markers.push(
+          <g key={`double-dot-${fret}`}>
+            <circle
+              cx={x}
+              cy={centerY - 50}
+              r={10}
+              className="fill-neutral-500"
+            />
+            <circle
+              cx={x}
+              cy={centerY + 50}
+              r={10}
+              className="fill-neutral-500"
+            />
+          </g>
+        );
+      }
+    }
+    return markers;
+  };
 
   const strokeNut = "#aaa",
     strokeFret = "#333",
@@ -194,6 +260,25 @@ export function Fretboard({
           ))}
         </g>
 
+        {/* Fret markers (dots) */}
+        {getFretMarkers()}
+
+        {/* String names */}
+        <g>
+          {stringNames.map((name, s) => (
+            <text
+              key={s}
+              x={padL - 25}
+              y={visY(s)}
+              className="fill-neutral-400 text-lg font-semibold"
+              textAnchor="middle"
+              dominantBaseline="central"
+            >
+              {name}
+            </text>
+          ))}
+        </g>
+
         {/* Notes moved to HTML overlay */}
       </svg>
       {/* HTML overlay for note bubbles */}
@@ -233,8 +318,8 @@ export function Fretboard({
           return (
             <div
               key={i}
-              className={`absolute -translate-x-1/2 -translate-y-1/2 flex items-center justify-center rounded-full text-neutral-100 font-semibold select-none ${
-                isRoot ? "bg-emerald-500" : "bg-zinc-600/90"
+              className={`absolute -translate-x-1/2 -translate-y-1/2 flex items-center justify-center rounded-full text-neutral-100 font-semibold select-none cursor-pointer transition-all duration-200 hover:scale-110 hover:shadow-lg ${
+                isRoot ? "bg-emerald-500 hover:bg-emerald-400" : "bg-zinc-600/90 hover:bg-zinc-500/90"
               }`}
               style={{ 
                 left: x, 
@@ -242,8 +327,11 @@ export function Fretboard({
                 width: `${adjustedBubbleR * 2}px`,
                 height: `${adjustedBubbleR * 2}px`,
                 fontSize: `${Math.max(10, adjustedBubbleR * 0.7)}px`,
-                ...borderStyle
+                ...borderStyle,
+                pointerEvents: 'auto' // Enable clicks on this element
               }}
+              onClick={() => handleNoteClick(p.string, p.fret)}
+              title={`${pcToName(p.pc)} - String ${p.string + 1}, Fret ${p.fret}`}
             >
               {label}
             </div>
