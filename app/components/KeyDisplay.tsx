@@ -132,8 +132,8 @@ export function KeyDisplay({
           return noteNames[noteIndex];
         });
         return {
-          formula: "1 - 2 - 3 - 4 - 5 - 6 (Chord: 1-3-5)",
-          description: "CAGED Major",
+          formula: "1 - 2 - 3 - 4 - 5 - 6",
+          description: "CAGED Major (1-3-5)",
           notes
         };
       } else {
@@ -144,8 +144,8 @@ export function KeyDisplay({
           return noteNames[noteIndex];
         });
         return {
-          formula: "1 - ♭3 - 4 - 5 - ♭7 (Chord: 1-♭3-5)",
-          description: "CAGED Minor",
+          formula: "1 - ♭3 - 4 - 5 - ♭7",
+          description: "CAGED Minor (1-♭3-5)",
           notes
         };
       }
