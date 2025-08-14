@@ -47,9 +47,11 @@ export const SCALE_STEPS: Record<ScaleKind, number[]> = {
   minor: [0, 2, 3, 5, 7, 8, 10], // Aeolian (natural minor)
 };
 
-// Minor-derived sets for 5-box modes
+// Pentatonic and hexatonic sets for 5-box modes
 export const MINOR_PENT_STEPS = [0, 3, 5, 7, 10]; // 1 b3 4 5 b7
+export const MAJOR_PENT_STEPS = [0, 2, 4, 7, 9]; // 1 2 3 5 6
 export const MINOR_HEX_STEPS = [0, 2, 3, 5, 7, 10]; // 1 2 b3 4 5 b7
+export const MAJOR_HEX_STEPS = [0, 2, 4, 5, 7, 9]; // 1 2 3 4 5 6
 
 // Intervals between adjacent strings in semitones (E→A=5, A→D=5, D→G=5, G→B=4, B→e=5)
 export const STRING_INTERVALS = [5, 5, 5, 4, 5];

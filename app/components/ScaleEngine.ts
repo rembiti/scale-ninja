@@ -8,6 +8,7 @@ import {
   SCALE_STEPS,
   MINOR_PENT_STEPS,
   MINOR_HEX_STEPS,
+  MAJOR_HEX_STEPS,
   STRING_INTERVALS,
   OPEN_STRINGS_PC,
   ScalePoint,
@@ -129,37 +130,45 @@ export function buildNPerString(
   return out;
 }
 
-/** Pentatonic 5-box (minor-based). Box 1 starts at root on low E. */
-export function buildPent5(keyPc: number, box: Position5, anchorLowEFret = 5): ScalePoint[] {
+/** Pentatonic 5-box. Box 1 starts at root on low E for minor, or relative minor root for major. */
+export function buildPent5(keyPc: number, box: Position5, scale: ScaleKind = "minor", anchorLowEFret = 5): ScalePoint[] {
+  // For major pentatonic, use the relative minor (3 semitones down)
+  // This way C major pentatonic uses A minor pentatonic shapes
+  const effectiveKeyPc = scale === "major" ? (keyPc + 9) % 12 : keyPc;
+  
   // Check for problematic key/box combinations that generate wide spans
   const isProblematicCase = 
-    (keyPc === 1 && box === 1) ||  // C#/Db Box 2
-    (keyPc === 6 && box === 4) ||  // F#/Gb Box 5
-    (keyPc === 11 && box === 2);   // B Box 3
+    (effectiveKeyPc === 1 && box === 1) ||  // C#/Db Box 2
+    (effectiveKeyPc === 6 && box === 4) ||  // F#/Gb Box 5
+    (effectiveKeyPc === 11 && box === 2);   // B Box 3
   
   // Use higher anchor for problematic cases to avoid open strings
   const adjustedAnchor = isProblematicCase ? anchorLowEFret + 5 : anchorLowEFret;
   
   const startDeg = (0 + box) % MINOR_PENT_STEPS.length;
-  return buildNPerString(keyPc, MINOR_PENT_STEPS, startDeg, 2, adjustedAnchor);
+  return buildNPerString(effectiveKeyPc, MINOR_PENT_STEPS, startDeg, 2, adjustedAnchor);
 }
 
-/** Hexatonic (minor pent + 2) 5-box. Box 1 starts at root on low E.
- *  Implementation: take the pentatonic box and add the 2nd degree only where
+/** Hexatonic (pent + extra note) 5-box. Box 1 starts at root on low E for minor, or relative minor root for major.
+ *  Implementation: take the pentatonic box and add the extra degree only where
  *  it naturally falls within the box's fret range (not forced onto every string).
  */
-export function buildHex5(keyPc: number, box: Position5, anchorLowEFret = 5): ScalePoint[] {
+export function buildHex5(keyPc: number, box: Position5, scale: ScaleKind = "minor", anchorLowEFret = 5): ScalePoint[] {
+  // For major hexatonic, use the relative minor (3 semitones down)
+  // This way C major hexatonic uses A minor hexatonic shapes
+  const effectiveKeyPc = scale === "major" ? (keyPc + 9) % 12 : keyPc;
+  
   // Check for problematic key/box combinations that generate wide spans
   const isProblematicCase = 
-    (keyPc === 1 && box === 1) ||  // C#/Db Box 2
-    (keyPc === 6 && box === 4) ||  // F#/Gb Box 5
-    (keyPc === 11 && box === 2);   // B Box 3
+    (effectiveKeyPc === 1 && box === 1) ||  // C#/Db Box 2
+    (effectiveKeyPc === 6 && box === 4) ||  // F#/Gb Box 5
+    (effectiveKeyPc === 11 && box === 2);   // B Box 3
   
   // Use higher anchor for problematic cases to avoid open strings
   const adjustedAnchor = isProblematicCase ? anchorLowEFret + 5 : anchorLowEFret;
   
-  // Base pent box
-  const pent = buildPent5(keyPc, box, adjustedAnchor);
+  // Base pent box (always use minor since we're using effectiveKeyPc)
+  const pent = buildPent5(effectiveKeyPc, box, "minor", adjustedAnchor);
 
   // Overall box fret range
   const boxMin = Math.min(...pent.map((p) => p.fret));
@@ -176,7 +185,9 @@ export function buildHex5(keyPc: number, box: Position5, anchorLowEFret = 5): Sc
     boxMax += 1; // minimal extension just for Box 1
   }
 
-  const targetPc = (keyPc + 2) % 12; // the 2nd degree
+  // For minor hexatonic: add the 2nd degree
+  // For major hexatonic: add the 4th degree (but we're using relative minor shapes, so still add 2nd of effective key)
+  const targetPc = (effectiveKeyPc + 2) % 12; // the 2nd degree of the effective key
   const added: { string: number; fret: number; pc: number }[] = [];
 
   // For each string, check if the 2nd degree falls within the box range
@@ -203,19 +214,27 @@ export function buildHex5(keyPc: number, box: Position5, anchorLowEFret = 5): Sc
     }
   }
 
+  // Choose the appropriate hex steps based on scale type
+  const hexSteps = scale === "major" ? MAJOR_HEX_STEPS : MINOR_HEX_STEPS;
+  const originalKeyPc = keyPc; // Keep original key for interval calculation
+  
   // Merge and remap degreeIdx to hex indices for all points
   const merged = [
     ...pent.map((p) => {
-      const interval = (p.pc - keyPc + 12) % 12;
-      const idx = MINOR_HEX_STEPS.indexOf(interval);
-      return { ...p, degreeIdx: idx };
+      const interval = (p.pc - originalKeyPc + 12) % 12;
+      const idx = hexSteps.indexOf(interval);
+      return { ...p, degreeIdx: idx >= 0 ? idx : 0 };
     }),
-    ...added.map((q) => ({
-      string: q.string,
-      fret: q.fret,
-      pc: q.pc,
-      degreeIdx: MINOR_HEX_STEPS.indexOf(2),
-    })),
+    ...added.map((q) => {
+      const interval = (q.pc - originalKeyPc + 12) % 12;
+      const idx = hexSteps.indexOf(interval);
+      return {
+        string: q.string,
+        fret: q.fret,
+        pc: q.pc,
+        degreeIdx: idx >= 0 ? idx : 1,
+      };
+    }),
   ];
 
   return merged;
@@ -223,7 +242,7 @@ export function buildHex5(keyPc: number, box: Position5, anchorLowEFret = 5): Sc
 
 /** Enhanced CAGED system - shows both chord shapes (triad) and pentatonic scale notes */
 export function buildCAGED(keyPc: number, scale: ScaleKind, shape: PositionCAGED): ScalePoint[] {
-  // Get the pentatonic notes using existing logic
+  // Get the pentatonic notes using the correct scale type
   const cagedToBoxMapping = {
     0: { box: 0, anchorFret: 0 },   // Shape 1 (E-shape) = Box 1 at open position
     1: { box: 1, anchorFret: 3 },   // Shape 2 (D-shape) = Box 2 at 3rd fret
@@ -233,11 +252,13 @@ export function buildCAGED(keyPc: number, scale: ScaleKind, shape: PositionCAGED
   };
   
   const mapping = cagedToBoxMapping[shape];
-  const pentNotes = buildPent5(keyPc, mapping.box as Position5, mapping.anchorFret);
+  // Use the correct scale type for pentatonic patterns
+  const pentNotes = buildPent5(keyPc, mapping.box as Position5, scale, mapping.anchorFret);
   
-  // Add chord shape information to each note
-  // Triad intervals: root (0), major 3rd (4), perfect 5th (7)
-  const triadIntervals = [0, 4, 7]; // Major triad
+  // Define chord tone intervals based on scale type
+  const triadIntervals = scale === "major" 
+    ? [0, 4, 7]  // Major triad: root, major 3rd, perfect 5th
+    : [0, 3, 7]; // Minor triad: root, minor 3rd, perfect 5th
   
   return pentNotes.map(note => {
     const interval = (note.pc - keyPc + 12) % 12;

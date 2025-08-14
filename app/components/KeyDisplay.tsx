@@ -72,41 +72,83 @@ export function KeyDisplay({
     const keyIndex = noteNames.findIndex(note => note === selectedKey);
     
     if (selectedMode === "pent5") {
-      // Minor pentatonic: 1, ♭3, 4, 5, ♭7
-      const pentSteps = [0, 3, 5, 7, 10];
-      const notes = pentSteps.map(step => {
-        const noteIndex = (keyIndex + step) % 12;
-        return noteNames[noteIndex];
-      });
-      return {
-        formula: "1 - ♭3 - 4 - 5 - ♭7",
-        description: "Minor Pentatonic",
-        notes
-      };
+      if (selectedScale === "major") {
+        // Major pentatonic: 1, 2, 3, 5, 6
+        const pentSteps = [0, 2, 4, 7, 9];
+        const notes = pentSteps.map(step => {
+          const noteIndex = (keyIndex + step) % 12;
+          return noteNames[noteIndex];
+        });
+        return {
+          formula: "1 - 2 - 3 - 5 - 6",
+          description: "Major Pentatonic",
+          notes
+        };
+      } else {
+        // Minor pentatonic: 1, ♭3, 4, 5, ♭7
+        const pentSteps = [0, 3, 5, 7, 10];
+        const notes = pentSteps.map(step => {
+          const noteIndex = (keyIndex + step) % 12;
+          return noteNames[noteIndex];
+        });
+        return {
+          formula: "1 - ♭3 - 4 - 5 - ♭7",
+          description: "Minor Pentatonic",
+          notes
+        };
+      }
     } else if (selectedMode === "hex5") {
-      // Minor hexatonic: 1, 2, ♭3, 4, 5, ♭7
-      const hexSteps = [0, 2, 3, 5, 7, 10];
-      const notes = hexSteps.map(step => {
-        const noteIndex = (keyIndex + step) % 12;
-        return noteNames[noteIndex];
-      });
-      return {
-        formula: "1 - 2 - ♭3 - 4 - 5 - ♭7",
-        description: "Minor Hexatonic",
-        notes
-      };
+      if (selectedScale === "major") {
+        // Major hexatonic: 1, 2, 3, 4, 5, 6
+        const hexSteps = [0, 2, 4, 5, 7, 9];
+        const notes = hexSteps.map(step => {
+          const noteIndex = (keyIndex + step) % 12;
+          return noteNames[noteIndex];
+        });
+        return {
+          formula: "1 - 2 - 3 - 4 - 5 - 6",
+          description: "Major Hexatonic",
+          notes
+        };
+      } else {
+        // Minor hexatonic: 1, 2, ♭3, 4, 5, ♭7
+        const hexSteps = [0, 2, 3, 5, 7, 10];
+        const notes = hexSteps.map(step => {
+          const noteIndex = (keyIndex + step) % 12;
+          return noteNames[noteIndex];
+        });
+        return {
+          formula: "1 - 2 - ♭3 - 4 - 5 - ♭7",
+          description: "Minor Hexatonic",
+          notes
+        };
+      }
     } else if (selectedMode === "caged") {
-      // For CAGED, show the pentatonic notes
-      const pentSteps = [0, 3, 5, 7, 10];
-      const notes = pentSteps.map(step => {
-        const noteIndex = (keyIndex + step) % 12;
-        return noteNames[noteIndex];
-      });
-      return {
-        formula: "Chord + Pentatonic",
-        description: "Chord Shape System",
-        notes
-      };
+      if (selectedScale === "major") {
+        // Major CAGED: major pentatonic + major chord tones
+        const pentSteps = [0, 2, 4, 5, 7, 9];
+        const notes = pentSteps.map(step => {
+          const noteIndex = (keyIndex + step) % 12;
+          return noteNames[noteIndex];
+        });
+        return {
+          formula: "1 - 2 - 3 - 4 - 5 - 6 (Chord: 1-3-5)",
+          description: "CAGED Major",
+          notes
+        };
+      } else {
+        // Minor CAGED: minor pentatonic + minor chord tones
+        const pentSteps = [0, 3, 5, 7, 10];
+        const notes = pentSteps.map(step => {
+          const noteIndex = (keyIndex + step) % 12;
+          return noteNames[noteIndex];
+        });
+        return {
+          formula: "1 - ♭3 - 4 - 5 - ♭7 (Chord: 1-♭3-5)",
+          description: "CAGED Minor",
+          notes
+        };
+      }
     } else {
       return {
         ...getScaleInfo(selectedKey, selectedScale),

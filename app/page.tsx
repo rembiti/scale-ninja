@@ -39,9 +39,9 @@ export default function Page() {
     if (selectedMode === "3nps") {
       pts = build3NPS(keyPc, selectedScale, selectedPosition);
     } else if (selectedMode === "pent5") {
-      pts = buildPent5(keyPc, selectedBox);
+      pts = buildPent5(keyPc, selectedBox, selectedScale);
     } else if (selectedMode === "hex5") {
-      pts = buildHex5(keyPc, selectedBox);
+      pts = buildHex5(keyPc, selectedBox, selectedScale);
     } else if (selectedMode === "caged") {
       pts = buildCAGED(keyPc, selectedScale, selectedCAGEDShape);
     } else {
