@@ -1,41 +1,55 @@
 # 🎸 Scale Ninja
 
-An interactive web application for visualizing and learning guitar scales across the entire fretboard. Master guitar scales with intuitive fretboard patterns, CAGED system visualization, and multiple learning modes. Built with Next.js, React, and TypeScript.
+An interactive web application for visualizing and learning guitar scales across the entire fretboard. Master guitar scales with intuitive fretboard patterns, CAGED system visualization, realistic audio playback, and multiple learning modes. Built with Next.js, React, and TypeScript.
 
 ![Guitar Scale Explorer Screenshot](public/screenshot.png)
 
-## Features
+## ✨ Features
 
-- **Multiple Scale Types**:
-  - Major (Ionian) and Natural Minor (Aeolian) scales
-  - Minor Pentatonic (5 boxes)
-  - Minor Hexatonic (Minor Pentatonic + 2nd degree)
+### 🎵 **Interactive Audio**
+- **Clickable Note Playback** - Click any note on the fretboard to hear realistic guitar tones
+- **Authentic Guitar Sound** - Multi-harmonic synthesis with proper filtering and envelope shaping
+- **Web Audio API** - High-quality audio generation with plucked-string characteristics
+- **Natural Decay** - Notes fade naturally like real guitar strings
+
+### 🎸 **Professional Fretboard**
+- **Authentic Fret Markers** - Traditional guitar inlay dots on frets 3, 5, 7, 9, 12, 15, 17, 19, 21, 24
+- **Double Dots on 12th Fret** - Properly spaced octave markers like real guitars
+- **String Names Display** - Shows tuning (E-A-D-G-B-E) for easy reference
+- **Full-Width Mobile Layout** - Always spans complete viewport width on mobile devices
+- **Responsive Sizing** - Dynamic fret and note sizing for optimal touch interaction
+
+### 🎼 **Scale Types & Modes**
+- **Major (Ionian) and Natural Minor (Aeolian)** scales
+- **Minor Pentatonic** (5 boxes) with authentic note patterns
+- **Minor Hexatonic** (Minor Pentatonic + 2nd degree)
 - **Multiple Viewing Modes**:
-  - CAGED System - 5 chord shapes with triad chord tones highlighted over pentatonic patterns
-  - Pentatonic Boxes - 5 classic pentatonic positions
-  - 3 Notes Per String (3NPS) - 7 modal positions
-  - Hexatonic Boxes - 5 pentatonic boxes with added 2nd degree
-  - Full Neck View - All notes in the scale across the entire fretboard
-- **Interactive Controls**:
-  - Select any of 12 keys (with enharmonic equivalents)
-  - Smart notation toggle - automatically converts selected key to enharmonic equivalent
-  - Switch between note names and scale degrees
-  - Real-time key and relative key display
-  - Responsive design optimized for mobile, tablet, and desktop
-- **CAGED System Features**:
-  - 5 classic chord shapes: E, D, C, A, G positions
-  - Triad chord tones (root, 3rd, 5th) highlighted within each pentatonic box
-  - Visual distinction between chord tones and scale tones
-  - Perfect for learning chord-scale relationships
-- **Visual Features**:
-  - Color-coded note markers with dynamic sizing
-  - Clear fret and string numbering
-  - Mobile-optimized bubble sizes to prevent overlap
-  - Professional key information display showing current and relative keys
-  - Contextual mode information (position, box, scale type)
-  - Beautiful guitar head icon branding with Iconify integration
-  - Custom favicon matching the app's visual identity
-  - Optimized for all screen sizes with proper responsive behavior
+  - **CAGED System** - 5 chord shapes with triad chord tones highlighted over pentatonic patterns
+  - **Pentatonic Boxes** - 5 classic pentatonic positions
+  - **3 Notes Per String (3NPS)** - 7 modal positions (Ionian through Locrian)
+  - **Hexatonic Boxes** - 5 pentatonic boxes with added 2nd degree
+  - **Full Neck View** - All notes in the scale across the entire fretboard
+
+### 🎯 **Smart Controls**
+- **12 Musical Keys** with enharmonic equivalents (C, C#/Db, D, etc.)
+- **Smart Notation Toggle** - Automatically converts between sharps and flats
+- **Note Names vs Scale Degrees** - Switch between absolute and relative notation
+- **Real-time Key Display** - Shows current key and relative major/minor
+- **Responsive Design** - Optimized for mobile, tablet, and desktop
+
+### 🎨 **Enhanced UI/UX**
+- **Scale Formulas** - Shows interval patterns (1-2-♭3-4-5-♭6-♭7) for each mode
+- **Complete Note Display** - All scale notes shown with root note highlighting
+- **Compact Desktop Layout** - Efficient use of screen space with comprehensive information
+- **Mobile-First Design** - Touch-optimized controls and full-width fretboard
+- **Visual Feedback** - Hover effects and smooth transitions throughout
+- **Professional Styling** - Modern dark theme with emerald accent colors
+
+### 🔧 **CAGED System Features**
+- **5 Classic Chord Shapes** - E, D, C, A, G positions
+- **Triad Chord Tones** - Root, 3rd, 5th highlighted within pentatonic patterns
+- **Visual Distinction** - Clear separation between chord tones and scale tones
+- **Chord-Scale Relationships** - Perfect for understanding how chords and scales connect
 
 ## Getting Started
 
