@@ -12,7 +12,8 @@ interface FretboardProps {
   scale: ScaleKind;
   labelMode: "note" | "degree";
   useFlats: boolean;
-  mode: "3nps" | "full" | "pent5" | "hex5" | "caged";
+  mode: "3nps" | "pent5" | "hex5" | "caged";
+  fullNeck?: boolean;
 }
 
 export function Fretboard({
@@ -24,6 +25,7 @@ export function Fretboard({
   labelMode,
   useFlats,
   mode,
+  fullNeck = false,
 }: FretboardProps) {
   const [dimensions, setDimensions] = useState({ bubbleR: 20, fretW: 48, padL: 60, padR: 20 });
 
@@ -32,16 +34,9 @@ export function Fretboard({
       // Check if we're in the browser environment
       if (typeof window === 'undefined') return;
       
-      const viewportWidth = window.innerWidth;
-      const containerPadding = 32; // Account for page container padding
-      const availableWidth = viewportWidth - containerPadding;
+      const viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1024;
       
-      // Determine fret count based on pattern and mode
-      const baseFretCount = Math.max(12, maxFret) - minFret + 1;
-      const isDesktop = viewportWidth >= 1024;
-      const displayFretCount = isDesktop ? 22 : baseFretCount;
-      
-      // Calculate optimal dimensions
+      // Calculate optimal dimensions - keep same spacing regardless of Full Neck mode
       let padL, padR, bubbleR, fretW;
       
       if (viewportWidth >= 1024) {
@@ -51,27 +46,20 @@ export function Fretboard({
         bubbleR = 20;
         fretW = 48;
       } else if (viewportWidth >= 768) {
-        // Tablet: balanced approach
+        // Tablet: fixed approach
         padL = 50;
         padR = 20;
-        const remainingWidth = availableWidth - padL - padR;
-        fretW = Math.max(42, Math.min(52, remainingWidth / displayFretCount));
+        fretW = 45; // Fixed width for tablets
         bubbleR = 18; // Fixed size, slightly smaller than desktop
       } else {
-        // Mobile: ALWAYS use full width, calculate fret width to fill space
+        // Mobile: FIXED fret width - never changes regardless of Full Neck mode
         const stringLabelSpace = 40; // Space for string names (E, A, D, etc.)
         padL = stringLabelSpace;
         padR = 8; // Minimal right padding
-        const remainingWidth = availableWidth - padL - padR;
         
-        // Always use full available width - calculate fret width to fit
-        fretW = remainingWidth / displayFretCount;
-        
-        // Ensure minimum fret width for usability, but prioritize full width
-        fretW = Math.max(24, fretW);
-        
-        // Adjust bubble size based on available fret width
-        bubbleR = Math.min(16, Math.max(12, fretW * 0.35));
+        // FIXED fret width - never calculate based on available space or fret count
+        fretW = 32; // Fixed width that works well on mobile
+        bubbleR = 14; // Fixed bubble size for mobile
       }
       
       setDimensions({ bubbleR, fretW, padL, padR });
@@ -104,8 +92,12 @@ export function Fretboard({
   // Calculate display parameters
   const baseFretCount = Math.max(12, maxFret) - minFret + 1;
   const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 1024;
-  const displayMinFret = isDesktop ? 0 : minFret;
-  const displayFretCount = isDesktop ? 22 : baseFretCount;
+  
+  // Separate display logic from sizing logic
+  const displayMinFret = fullNeck ? 0 : (isDesktop ? 0 : minFret);
+  const displayFretCount = fullNeck ? 25 : (isDesktop ? 24 : baseFretCount);
+  
+  // Fixed width calculation - never changes based on fret count
   const innerW = displayFretCount * fretW;
   const width = padL + padR + innerW;
   const stringH = (height - padV - padBottom) / (stringCount - 1);

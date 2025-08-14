@@ -130,6 +130,42 @@ export function buildNPerString(
   return out;
 }
 
+/** Build scale notes across the entire 24-fret neck for Full Neck mode */
+export function buildFullNeckScale(
+  keyPc: number,
+  steps: number[],
+  scale: ScaleKind = "minor"
+): ScalePoint[] {
+  const out: ScalePoint[] = [];
+  
+  // For each string (0 = low E, 5 = high E)
+  for (let stringIndex = 0; stringIndex < 6; stringIndex++) {
+    const openPc = OPEN_STRINGS_PC[stringIndex];
+    
+    // For each fret from 0 to 24
+    for (let fret = 0; fret <= 24; fret++) {
+      const notePc = (openPc + fret) % 12;
+      
+      // Check if this note is in our scale
+      for (let degreeIdx = 0; degreeIdx < steps.length; degreeIdx++) {
+        const scalePc = (keyPc + steps[degreeIdx]) % 12;
+        
+        if (notePc === scalePc) {
+          out.push({
+            string: stringIndex,
+            fret,
+            pc: notePc,
+            degreeIdx
+          });
+          break; // Only add each fret position once
+        }
+      }
+    }
+  }
+  
+  return out;
+}
+
 /** Pentatonic 5-box. Box 1 starts at root on low E for minor, or relative minor root for major. */
 export function buildPent5(keyPc: number, box: Position5, scale: ScaleKind = "minor", anchorLowEFret = 5): ScalePoint[] {
   // For major pentatonic, use the relative minor (3 semitones down)

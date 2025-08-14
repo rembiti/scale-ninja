@@ -15,8 +15,8 @@ interface ControlPanelProps {
   setSelectedKey: (key: string) => void;
   selectedScale: ScaleKind;
   setSelectedScale: (scale: ScaleKind) => void;
-  selectedMode: "3nps" | "full" | "pent5" | "hex5" | "caged";
-  setSelectedMode: (mode: "3nps" | "full" | "pent5" | "hex5" | "caged") => void;
+  selectedMode: "3nps" | "pent5" | "hex5" | "caged";
+  setSelectedMode: (mode: "3nps" | "pent5" | "hex5" | "caged") => void;
   selectedPosition: Position;
   setSelectedPosition: (position: Position) => void;
   selectedBox: Position5;
@@ -27,6 +27,8 @@ interface ControlPanelProps {
   setLabelMode: (mode: "note" | "degree") => void;
   useFlats: boolean;
   setUseFlats: (useFlats: boolean) => void;
+  fullNeck: boolean;
+  setFullNeck: (fullNeck: boolean) => void;
 }
 
 export function ControlPanel({
@@ -46,6 +48,8 @@ export function ControlPanel({
   setLabelMode,
   useFlats,
   setUseFlats,
+  fullNeck,
+  setFullNeck,
 }: ControlPanelProps) {
   // Helper function to convert key to enharmonic equivalent
   const convertKeyToNotation = (key: string, toFlats: boolean): string => {
@@ -129,14 +133,11 @@ export function ControlPanel({
             { value: "pent5", label: "Pentatonic" },
             { value: "3nps", label: "3NPS" },
             { value: "hex5", label: "Hexatonic" },
-            { value: "full", label: "Full Neck" },
           ].map(({ value, label }) => (
             <button
               key={value}
               onClick={() =>
-                setSelectedMode(
-                  value as "3nps" | "full" | "pent5" | "hex5" | "caged"
-                )
+                setSelectedMode(value as "3nps" | "pent5" | "hex5" | "caged")
               }
               className={`px-4 py-2 rounded text-sm font-medium transition-all duration-200 transform hover:scale-105 active:scale-95 ${
                 selectedMode === value
@@ -232,19 +233,34 @@ export function ControlPanel({
           ))}
         </Field>
 
-        {/* Sharp/Flat Toggle */}
-        <Field label="Notation">
-          <button
-            onClick={handleNotationToggle}
-            className={`px-4 py-2 rounded text-sm font-medium transition-all duration-200 transform hover:scale-105 active:scale-95 ${
-              useFlats
-                ? "bg-emerald-500 text-white shadow-lg"
-                : "bg-neutral-700 text-neutral-200 hover:bg-neutral-600 hover:shadow-md"
-            }`}
-          >
-            {useFlats ? "♭ Flats" : "♯ Sharps"}
-          </button>
-        </Field>
+        {/* Notation & Full Neck Toggles */}
+        <div className="flex items-center justify-between gap-3 w-full">
+          <Field label="Options">
+            <button
+              onClick={handleNotationToggle}
+              className={`px-4 py-2 rounded text-sm font-medium transition-all duration-200 transform hover:scale-105 active:scale-95 ${
+                useFlats
+                  ? "bg-emerald-500 text-white shadow-lg"
+                  : "bg-neutral-700 text-neutral-200 hover:bg-neutral-600 hover:shadow-md"
+              }`}
+            >
+              {useFlats ? "♭ Flats" : "♯ Sharps"}
+            </button>
+          </Field>
+
+          <Field label="Full Neck">
+            <button
+              onClick={() => setFullNeck(!fullNeck)}
+              className={`px-4 py-2 rounded text-sm font-medium transition-all duration-200 transform hover:scale-105 active:scale-95 ${
+                fullNeck
+                  ? "bg-emerald-500 text-white shadow-lg"
+                  : "bg-neutral-700 text-neutral-200 hover:bg-neutral-600 hover:shadow-md"
+              }`}
+            >
+              {fullNeck ? "ON" : "OFF"}
+            </button>
+          </Field>
+        </div>
       </div>
     </div>
   );

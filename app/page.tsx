@@ -6,14 +6,14 @@ import { ControlPanel } from "./components/ControlPanel";
 import { KeyDisplay } from "./components/KeyDisplay";
 import { Fretboard } from "./components/Fretboard";
 import { Footer } from "./components/Footer";
-import { ScaleKind, Position, Position5, PositionCAGED } from "./components/types";
+import { ScaleKind, Position, Position5, PositionCAGED, ScalePoint } from "./components/types";
 import {
   keyToPc,
   build3NPS,
   buildPent5,
   buildHex5,
   buildCAGED,
-  buildFullNeck,
+  buildFullNeckScale,
 } from "./components/ScaleEngine";
 
 /** Tailwind-only • Player view (low-E at bottom) • Correct 3NPS • 7 positions
@@ -24,33 +24,64 @@ export default function Page() {
   const [selectedKey, setSelectedKey] = useState("A");
   const [selectedScale, setSelectedScale] = useState<ScaleKind>("minor");
   const [selectedMode, setSelectedMode] = useState<
-    "3nps" | "full" | "pent5" | "hex5" | "caged"
+    "3nps" | "pent5" | "hex5" | "caged"
   >("3nps");
   const [selectedPosition, setSelectedPosition] = useState<Position>(0);
   const [selectedBox, setSelectedBox] = useState<Position5>(0);
   const [selectedCAGEDShape, setSelectedCAGEDShape] = useState<PositionCAGED>(0);
   const [labelMode, setLabelMode] = useState<"note" | "degree">("note");
   const [useFlats, setUseFlats] = useState(false);
+  const [fullNeck, setFullNeck] = useState(false);
 
   const keyPc = keyToPc(selectedKey);
 
   const { points, minFret, maxFret } = useMemo(() => {
-    let pts;
-    if (selectedMode === "3nps") {
-      pts = build3NPS(keyPc, selectedScale, selectedPosition);
-    } else if (selectedMode === "pent5") {
-      pts = buildPent5(keyPc, selectedBox, selectedScale);
-    } else if (selectedMode === "hex5") {
-      pts = buildHex5(keyPc, selectedBox, selectedScale);
-    } else if (selectedMode === "caged") {
-      pts = buildCAGED(keyPc, selectedScale, selectedCAGEDShape);
+    let pts: ScalePoint[] = [];
+    
+    if (fullNeck) {
+      // Full neck mode: show all scale notes across the entire 24-fret range
+      if (selectedMode === "3nps") {
+        // Use correct scale steps based on major/minor selection
+        const steps = selectedScale === "major" ? [0, 2, 4, 5, 7, 9, 11] : [0, 2, 3, 5, 7, 8, 10];
+        pts = buildFullNeckScale(keyPc, steps, selectedScale);
+      } else if (selectedMode === "pent5") {
+        // Use pentatonic steps for complete neck coverage
+        const steps = selectedScale === "major" ? [0, 2, 4, 7, 9] : [0, 3, 5, 7, 10];
+        pts = buildFullNeckScale(keyPc, steps, selectedScale);
+      } else if (selectedMode === "hex5") {
+        // Use hexatonic steps for complete neck coverage
+        const steps = selectedScale === "major" ? [0, 2, 4, 5, 7, 9] : [0, 2, 3, 5, 7, 10];
+        pts = buildFullNeckScale(keyPc, steps, selectedScale);
+      } else if (selectedMode === "caged") {
+        // Use pentatonic steps for CAGED (since CAGED is based on pentatonic + chord tones)
+        const steps = selectedScale === "major" ? [0, 2, 4, 7, 9] : [0, 3, 5, 7, 10];
+        pts = buildFullNeckScale(keyPc, steps, selectedScale);
+        
+        // Add chord tone information
+        const triadIntervals = selectedScale === "major" ? [0, 4, 7] : [0, 3, 7];
+        pts = pts.map(note => {
+          const interval = (note.pc - keyPc + 12) % 12;
+          const isChordTone = triadIntervals.includes(interval);
+          return { ...note, isChordTone };
+        });
+      }
     } else {
-      pts = buildFullNeck(keyPc, selectedScale);
+      // Single mode: show selected position/box/shape
+      if (selectedMode === "3nps") {
+        pts = build3NPS(keyPc, selectedScale, selectedPosition);
+      } else if (selectedMode === "pent5") {
+        pts = buildPent5(keyPc, selectedBox, selectedScale);
+      } else if (selectedMode === "hex5") {
+        pts = buildHex5(keyPc, selectedBox, selectedScale);
+      } else if (selectedMode === "caged") {
+        pts = buildCAGED(keyPc, selectedScale, selectedCAGEDShape);
+      }
     }
+    
     const minF = Math.min(...pts.map((p) => p.fret));
     const maxF = Math.max(...pts.map((p) => p.fret));
     return { points: pts, minFret: minF, maxFret: maxF };
-  }, [keyPc, selectedScale, selectedMode, selectedPosition, selectedBox, selectedCAGEDShape]);
+  }, [keyPc, selectedScale, selectedMode, selectedPosition, selectedBox, selectedCAGEDShape, fullNeck]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-neutral-900 to-neutral-800 text-neutral-100">
@@ -75,6 +106,8 @@ export default function Page() {
             setLabelMode={setLabelMode}
             useFlats={useFlats}
             setUseFlats={setUseFlats}
+            fullNeck={fullNeck}
+            setFullNeck={setFullNeck}
           />
         </div>
 
@@ -100,6 +133,7 @@ export default function Page() {
             labelMode={labelMode}
             useFlats={useFlats}
             mode={selectedMode}
+            fullNeck={fullNeck}
           />
         </div>
 
